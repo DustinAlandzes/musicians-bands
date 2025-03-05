@@ -9,12 +9,19 @@ describe('Band, Musician, and Song Models', () => {
         // the 'sync' method will create tables based on the model class
         // by setting 'force:true' the tables are recreated each time the 
         // test suite is run
+        await sequelize.drop()
+    })
+
+    beforeEach(async () => {
         await sequelize.sync({ force: true });
     })
 
     test('can create a Band', async () => {
-        // TODO - test creating a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        expect(band.name).toBe(name);
+        expect(band.genre).toBe(genre);
     })
 
     test('can create a Musician', async () => {
@@ -23,8 +30,12 @@ describe('Band, Musician, and Song Models', () => {
     })
 
     test('can update a Band', async () => {
-        // TODO - test updating a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        expect(band.genre).toBe("rnb");
+        band.update({genre: "rock"})
+        expect(band.genre).toBe("rock");
     })
 
     test('can update a Musician', async () => {
@@ -33,8 +44,15 @@ describe('Band, Musician, and Song Models', () => {
     })
 
     test('can delete a Band', async () => {
-        // TODO - test deleting a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        const firstFind = await Band.findOne({name: name, genre: genre})
+        expect(firstFind.name).toBe(name);
+
+        await Band.destroy({where: {name: name, genre: genre}})
+        const secondFind = await Band.findOne({name: name, genre: genre})
+        expect(secondFind).toBe(null);
     })
 
     test('can delete a Musician', async () => {
