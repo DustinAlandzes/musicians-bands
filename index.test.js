@@ -112,19 +112,19 @@ describe('Band, Musician, and Song Models', () => {
         expect(secondFind).toBe(null);
     })
 
-    test('can create a Song', async () => {
+    test('can destroy a Song', async () => {
         const song = await Song.create({
-            title: 'song name',
+            title: 'song name2',
             year: 2025,
             length: 15,
         })
-        expect(song.title).toBe('song name');
+        expect(song.title).toBe('song name2');
 
-        const firstFind = await Song.findOne({name: 'song name'})
-        expect(firstFind.name).toBe('song name');
+        const firstFind = await Song.findOne({name: 'song name2', year: 2025})
+        expect(firstFind.name).toBe('song name2');
         await song.destroy();
 
-        const secondFind = await Song.findOne({name: 'song name'})
+        const secondFind = await Song.findOne({name: 'song name2', year: 2025})
         expect(secondFind.name).toBe(null);
     })
 
