@@ -75,4 +75,15 @@ describe('Band, Musician, and Song Models', () => {
         const secondFind = await Musician.findOne({name: name, instrument: instrument})
         expect(secondFind).toBe(null);
     })
+
+    // TODO - write test to account for Band-Musician association
+    test('can associate a Band with a Musician', async () => {
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        const musician = await Musician.create({name: "bob", instrument: "guitar"})
+        await band.addMusician(musician)
+        const musicians = await band.getMusicians()
+        expect(musicians[0].name).toBe("bob")
+    })
 })
