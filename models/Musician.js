@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const {sequelize} = require('../db');
+const { sequelize } = require('../db');
 class Musician extends Model {}
 
 // initializing our Musician model and passing in the schema object and the connection object
