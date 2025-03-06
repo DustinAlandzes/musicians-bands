@@ -26,7 +26,11 @@ describe('Band, Musician, and Song Models', () => {
 
     test('can create a Musician', async () => {
         // TODO - test creating a musician
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const name = "test"
+        const instrument = "guitar"
+        const musician = await Musician.create({name: name, instrument: instrument})
+        expect(musician.name).toBe('test');
+        expect(musician.instrument).toBe('guitar');
     })
 
     test('can update a Band', async () => {
@@ -40,7 +44,12 @@ describe('Band, Musician, and Song Models', () => {
 
     test('can update a Musician', async () => {
         // TODO - test updating a musician
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const name = "test"
+        const instrument = "guitar"
+        const musician = await Musician.create({name: name, instrument: instrument})
+        expect(musician.name).toBe('test');
+        musician.update({name: "bob"})
+        expect(musician.name).toBe('bob')
     })
 
     test('can delete a Band', async () => {
@@ -57,6 +66,13 @@ describe('Band, Musician, and Song Models', () => {
 
     test('can delete a Musician', async () => {
         // TODO - test deleting a musician
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const name = "test"
+        const instrument = "guitar"
+        const musician = await Musician.create({name: name, instrument: instrument})
+        const firstFind = await Musician.findOne({name: name, instrument: instrument})
+        expect(firstFind.name).toBe(name);
+        await musician.destroy({where: {name: name, instrument: instrument}})
+        const secondFind = await Musician.findOne({name: name, instrument: instrument})
+        expect(secondFind).toBe(null);
     })
 })
