@@ -136,4 +136,50 @@ describe('Band, Musician, and Song Models', () => {
         const musicians = await band.getMusicians()
         expect(musicians[0].name).toBe("bob")
     })
+
+    test('Band can have multiple songs', async () => {
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+
+        const song = await Song.create({
+            title: 'a good song',
+            year: 2025,
+            length: 30,
+        })
+        const song2 = await Song.create({
+            title: 'another good song',
+            year: 2025,
+            length: 30,
+        })
+
+        await band.addSong(song)
+        await band.addSong(song2)
+
+        const bandSongs = await band.getSongs()
+        expect(bandSongs[0].title).toBe("a good song")
+        expect(bandSongs[1].title).toBe("another good song")
+
+    })
+
+    test('Song can have multiple bands', async () => {
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        const band2 = await Band.create({name: "another band", genre: "classical"})
+
+        const song = await Song.create({
+            title: 'a good song',
+            year: 2025,
+            length: 30,
+        })
+
+        await song.addBand(band)
+        await song.addBand(band2)
+
+        const songBands = await song.getBands()
+        expect(songBands[0].name).toBe("test")
+        expect(songBands[1].name).toBe("another band")
+
+    })
 })
