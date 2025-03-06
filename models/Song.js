@@ -15,7 +15,6 @@ Song.init(
         modelName: "Song"
     }
 );
-sequelize.sync();
 
 module.exports = {
     Song

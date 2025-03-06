@@ -17,9 +17,11 @@ describe('Band, Musician, and Song Models', () => {
     })
 
     test('can create a Band', async () => {
+        // create the band and expect it's properties
         const name = "test"
         const genre = "rnb"
         const band = await Band.create({name: name, genre: genre})
+
         expect(band.name).toBe(name);
         expect(band.genre).toBe(genre);
     })
@@ -33,11 +35,25 @@ describe('Band, Musician, and Song Models', () => {
         expect(musician.instrument).toBe('guitar');
     })
 
+    test('can create a Song', async () => {
+        const song = await Song.create({
+            title: 'song name',
+            year: 2025,
+            length: 15,
+        })
+        expect(song.title).toBe('song name');
+        expect(song.year).toBe(2025);
+        expect(song.length).toBe(15);
+    })
+
     test('can update a Band', async () => {
+        // create the band
         const name = "test"
         const genre = "rnb"
         const band = await Band.create({name: name, genre: genre})
         expect(band.genre).toBe("rnb");
+
+        // update it and expect to see it updated
         band.update({genre: "rock"})
         expect(band.genre).toBe("rock");
     })
@@ -52,20 +68,39 @@ describe('Band, Musician, and Song Models', () => {
         expect(musician.name).toBe('bob')
     })
 
+    test('can update a Song', async () => {
+        const song = await Song.create({
+            title: 'song name',
+            year: 2025,
+            length: 15,
+        })
+        expect(song.title).toBe('song name');
+        expect(song.year).toBe(2025);
+        expect(song.length).toBe(15);
+
+        await song.update({length: 20000})
+
+        expect(song.length).toBe(20000);
+
+    })
+
     test('can delete a Band', async () => {
+        // create the band
         const name = "test"
         const genre = "rnb"
         const band = await Band.create({name: name, genre: genre})
         const firstFind = await Band.findOne({name: name, genre: genre})
         expect(firstFind.name).toBe(name);
 
+        // delete the band
         await Band.destroy({where: {name: name, genre: genre}})
+
+        // check to see if the band was deleted
         const secondFind = await Band.findOne({name: name, genre: genre})
         expect(secondFind).toBe(null);
     })
 
     test('can delete a Musician', async () => {
-        // TODO - test deleting a musician
         const name = "test"
         const instrument = "guitar"
         const musician = await Musician.create({name: name, instrument: instrument})
@@ -76,7 +111,22 @@ describe('Band, Musician, and Song Models', () => {
         expect(secondFind).toBe(null);
     })
 
-    // TODO - write test to account for Band-Musician association
+    test('can destroy a Song', async () => {
+        const song = await Song.create({
+            title: 'song name2',
+            year: 2025,
+            length: 15,
+        })
+        expect(song.title).toBe('song name2');
+
+        const firstFind = await Song.findOne({name: 'song name2', year: 2025})
+        expect(firstFind.title).toBe('song name2');
+        await song.destroy();
+
+        const secondFind = await Song.findOne({name: 'song name2', year: 2025})
+        expect(secondFind).toBe(null);
+    })
+
     test('can associate a Band with a Musician', async () => {
         const name = "test"
         const genre = "rnb"
@@ -85,5 +135,51 @@ describe('Band, Musician, and Song Models', () => {
         await band.addMusician(musician)
         const musicians = await band.getMusicians()
         expect(musicians[0].name).toBe("bob")
+    })
+
+    test('Band can have multiple songs', async () => {
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+
+        const song = await Song.create({
+            title: 'a good song',
+            year: 2025,
+            length: 30,
+        })
+        const song2 = await Song.create({
+            title: 'another good song',
+            year: 2025,
+            length: 30,
+        })
+
+        await band.addSong(song)
+        await band.addSong(song2)
+
+        const bandSongs = await band.getSongs()
+        expect(bandSongs[0].title).toBe("a good song")
+        expect(bandSongs[1].title).toBe("another good song")
+
+    })
+
+    test('Song can have multiple bands', async () => {
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        const band2 = await Band.create({name: "another band", genre: "classical"})
+
+        const song = await Song.create({
+            title: 'a good song',
+            year: 2025,
+            length: 30,
+        })
+
+        await song.addBand(band)
+        await song.addBand(band2)
+
+        const songBands = await song.getBands()
+        expect(songBands[0].name).toBe("test")
+        expect(songBands[1].name).toBe("another band")
+
     })
 })
