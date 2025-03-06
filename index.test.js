@@ -101,7 +101,6 @@ describe('Band, Musician, and Song Models', () => {
     })
 
     test('can delete a Musician', async () => {
-        // TODO - test deleting a musician
         const name = "test"
         const instrument = "guitar"
         const musician = await Musician.create({name: name, instrument: instrument})
@@ -121,11 +120,20 @@ describe('Band, Musician, and Song Models', () => {
         expect(song.title).toBe('song name2');
 
         const firstFind = await Song.findOne({name: 'song name2', year: 2025})
-        expect(firstFind.name).toBe('song name2');
+        expect(firstFind.title).toBe('song name2');
         await song.destroy();
 
         const secondFind = await Song.findOne({name: 'song name2', year: 2025})
-        expect(secondFind.name).toBe(null);
+        expect(secondFind).toBe(null);
     })
 
+    test('can associate a Band with a Musician', async () => {
+        const name = "test"
+        const genre = "rnb"
+        const band = await Band.create({name: name, genre: genre})
+        const musician = await Musician.create({name: "bob", instrument: "guitar"})
+        await band.addMusician(musician)
+        const musicians = await band.getMusicians()
+        expect(musicians[0].name).toBe("bob")
+    })
 })
